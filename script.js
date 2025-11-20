@@ -1,14 +1,11 @@
-// Smooth scrolling for navigation
 document.addEventListener('DOMContentLoaded', function() {
     
-    // Set dark mode as default
     document.body.classList.add('dark-theme');
     const themeIcon = document.querySelector('.theme-icon');
     if (themeIcon) {
         themeIcon.textContent = '☀️';
     }
     
-    // Animate elements on scroll
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
@@ -22,25 +19,78 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }, observerOptions);
 
-    // Observe all sections
     document.querySelectorAll('section').forEach(section => {
         section.classList.add('fade-out');
         observer.observe(section);
     });
 
-    // Member card hover effect with tilt
     const memberCards = document.querySelectorAll('.member-card');
     memberCards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-10px) scale(1.02)';
-        });
-        
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0) scale(1)';
+        card.addEventListener('click', function(e) {
+            if (e.target.tagName === 'A') return;
+            
+            const avatar = this.querySelector('.member-avatar img');
+            const nameLink = this.querySelector('h3 a');
+            const name = nameLink.textContent.trim();
+            const profileUrl = nameLink.getAttribute('href');
+            const id = this.querySelector('.role').textContent;
+            const description = this.querySelector('.description').innerHTML;
+            
+            showMemberModal(avatar ? avatar.src : null, name, id, description, profileUrl);
         });
     });
 
-    // Fade toggle effect for slogan
+    function showMemberModal(avatarSrc, name, id, description, profileUrl) {
+        const existingModal = document.querySelector('.member-modal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+
+        const modal = document.createElement('div');
+        modal.className = 'member-modal';
+        modal.innerHTML = `
+            <div class="member-modal-content">
+                <button class="member-modal-close">&times;</button>
+                <div class="member-modal-avatar">
+                    ${avatarSrc ? `<img src="${avatarSrc}" alt="${name}">` : `<div style="background: linear-gradient(135deg, #3b82f6, #60a5fa); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-size: 48px; font-weight: bold;">${name.split(' ').map(n => n[0]).join('')}</div>`}
+                </div>
+                <h2 class="member-modal-name">${name}</h2>
+                <p class="member-modal-id">${id}</p>
+                <p class="member-modal-description">${description}</p>
+                <a href="${profileUrl}" target="_blank" rel="noopener noreferrer" class="member-modal-link">
+                    View Profile →
+                </a>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        setTimeout(() => {
+            modal.classList.add('active');
+        }, 10);
+
+        const closeBtn = modal.querySelector('.member-modal-close');
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+            setTimeout(() => modal.remove(), 300);
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+                setTimeout(() => modal.remove(), 300);
+            }
+        });
+
+        document.addEventListener('keydown', function escHandler(e) {
+            if (e.key === 'Escape') {
+                modal.classList.remove('active');
+                setTimeout(() => modal.remove(), 300);
+                document.removeEventListener('keydown', escHandler);
+            }
+        });
+    }
+
     const slogan = document.querySelector('.slogan');
     const slogans = [
         '"Innovation Through Collaboration"',
@@ -52,41 +102,18 @@ document.addEventListener('DOMContentLoaded', function() {
     slogan.style.opacity = '1';
     
     function toggleSlogan() {
-        // Fade out
         slogan.style.transition = 'opacity 0.8s ease';
         slogan.style.opacity = '0';
         
         setTimeout(() => {
-            // Change text
             currentSloganIndex = (currentSloganIndex + 1) % slogans.length;
             slogan.textContent = slogans[currentSloganIndex];
-            
-            // Fade in
             slogan.style.opacity = '1';
         }, 800);
     }
     
-    // Toggle every 4 seconds
     setInterval(toggleSlogan, 4000);
 
-    // Counter animation for stats
-    function animateCounter(element, target, duration) {
-        let start = 0;
-        const increment = target / (duration / 16);
-        
-        function updateCounter() {
-            start += increment;
-            if (start < target) {
-                element.textContent = Math.floor(start);
-                requestAnimationFrame(updateCounter);
-            } else {
-                element.textContent = target;
-            }
-        }
-        updateCounter();
-    }
-
-    // Project section click to expand details
     const projectContent = document.querySelector('.project-content');
     if (projectContent) {
         projectContent.style.cursor = 'pointer';
@@ -96,13 +123,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Add floating animation to feature icons
     const featureIcons = document.querySelectorAll('.feature-icon');
     featureIcons.forEach((icon, index) => {
         icon.style.animation = `float 3s ease-in-out ${index * 0.2}s infinite`;
     });
 
-    // Interactive logo
     const logo = document.querySelector('.logo');
     if (logo) {
         logo.addEventListener('click', function() {
@@ -113,10 +138,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Add particle effect on header
     createParticles();
 
-    // Theme toggle functionality
     const themeToggle = document.getElementById('theme-toggle');
     if (themeToggle) {
         themeToggle.addEventListener('click', function() {
@@ -126,7 +149,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Member card click effect
     memberCards.forEach(card => {
         card.addEventListener('click', function(e) {
             if (!e.target.closest('a')) {
@@ -135,11 +157,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Add scroll progress indicator
     window.addEventListener('scroll', updateScrollProgress);
     updateScrollProgress();
 
-    // Sticky header with scroll effect
     const header = document.querySelector('header');
     window.addEventListener('scroll', function() {
         if (window.scrollY > 50) {
@@ -150,7 +170,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Create ripple effect
 function createRipple(event, element) {
     const ripple = document.createElement('span');
     const rect = element.getBoundingClientRect();
@@ -170,7 +189,6 @@ function createRipple(event, element) {
     }, 600);
 }
 
-// Create floating particles
 function createParticles() {
     const header = document.querySelector('header');
     const particleCount = 20;
@@ -185,7 +203,6 @@ function createParticles() {
     }
 }
 
-// Update scroll progress
 function updateScrollProgress() {
     const progressBar = document.querySelector('.scroll-progress');
     if (progressBar) {
@@ -195,7 +212,6 @@ function updateScrollProgress() {
     }
 }
 
-// Add smooth reveal animation
 function revealOnScroll() {
     const reveals = document.querySelectorAll('.fade-out');
     
