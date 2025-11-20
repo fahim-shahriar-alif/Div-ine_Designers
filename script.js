@@ -33,22 +33,34 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Dynamic typing effect for slogan
+    // Fade toggle effect for slogan
     const slogan = document.querySelector('.slogan');
-    const sloganText = slogan.textContent;
-    slogan.textContent = '';
+    const slogans = [
+        '"Innovation Through Collaboration"',
+        '"See Further. Build Smarter."'
+    ];
+    let currentSloganIndex = 0;
+    
+    slogan.textContent = slogans[0];
     slogan.style.opacity = '1';
     
-    let i = 0;
-    function typeWriter() {
-        if (i < sloganText.length) {
-            slogan.textContent += sloganText.charAt(i);
-            i++;
-            setTimeout(typeWriter, 100);
-        }
+    function toggleSlogan() {
+        // Fade out
+        slogan.style.transition = 'opacity 0.8s ease';
+        slogan.style.opacity = '0';
+        
+        setTimeout(() => {
+            // Change text
+            currentSloganIndex = (currentSloganIndex + 1) % slogans.length;
+            slogan.textContent = slogans[currentSloganIndex];
+            
+            // Fade in
+            slogan.style.opacity = '1';
+        }, 800);
     }
     
-    setTimeout(typeWriter, 500);
+    // Toggle every 4 seconds
+    setInterval(toggleSlogan, 4000);
 
     // Counter animation for stats
     function animateCounter(element, target, duration) {
