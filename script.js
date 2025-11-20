@@ -1,6 +1,13 @@
 // Smooth scrolling for navigation
 document.addEventListener('DOMContentLoaded', function() {
     
+    // Set dark mode as default
+    document.body.classList.add('dark-theme');
+    const themeIcon = document.querySelector('.theme-icon');
+    if (themeIcon) {
+        themeIcon.textContent = '☀️';
+    }
+    
     // Animate elements on scroll
     const observerOptions = {
         threshold: 0.1,
